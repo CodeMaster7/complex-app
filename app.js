@@ -1,5 +1,13 @@
+require('dotenv').config();
+
 // DEPENDENCIES
 const express = require('express')
+
+const {
+    SERVER_PORT
+} = process.env;
+
+// connect to mongoDB
 
 // EXPRESS
 const app = express()
@@ -17,5 +25,5 @@ app.get('/', function(req, res) {
     res.render('home-guest')
 })
 
-app.listen(3000)
+app.listen(SERVER_PORT)
 console.log(app.settings);

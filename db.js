@@ -7,9 +7,7 @@ const {
 } = process.env;
 
 // connect to the database
-const connectionString = CONNECTION_STRING
-
-mongodb.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true}, function (err, client) {
+mongodb.connect(CONNECTION_STRING, {useNewUrlParser: true, useUnifiedTopology: true}, function (err, client) {
     console.log('connected to database');
     module.exports = client.db()
     const app = require('./app')

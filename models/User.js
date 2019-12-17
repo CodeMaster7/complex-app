@@ -5,6 +5,19 @@ let User = function (data) {
     this.errors = []
 }
 
+User.prototype.cleanUp = function () {
+    if (typeof(this.data.username) != 'string') {this.data.username = ''}
+    if (typeof(this.data.email) != 'string') {this.data.email = ''}
+    if (typeof(this.data.password) != 'string') {this.data.password = ''}
+
+    // get rid of any bogus properties
+    this.data = {
+        username: this.data.username.trim().toLowerCase(),
+        email: this.data.email.trim().toLowerCase(),
+        password: this.data.password
+    }
+}
+
 User.prototype.validate = function () {
     if (this.data.username == '') {this.errors.push('You must provide a username.')}
     if (this.data.username != '' && !validator.isAlphanumeric(this.data.username)) {this.errors.push('Username can only contain letters and numbers.')}
@@ -18,6 +31,7 @@ User.prototype.validate = function () {
 
 User.prototype.register = function () { // all 10k objs will point or have access to this jump method. it wont duplicate the jump for each 10k objects
     // Step #1: Validate user data
+    this.cleanUp()
     this.validate() // this is pointing towards the user object from userController because that user obj is calling the register function
     // Step #2: Only if there are no validation errors // then save the user data into a database
 }

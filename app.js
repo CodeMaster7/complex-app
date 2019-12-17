@@ -1,14 +1,6 @@
-require('dotenv').config();
-
 // DEPENDENCIES
 const express = require('express')
 const router = require('./router'); // 1st executes the file and the code inside it immediately - // 2nd it returns whatever that file exports and stores it to router variable
-
-const {
-    SERVER_PORT
-} = process.env;
-
-// connect to mongoDB
 
 // EXPRESS
 const app = express()
@@ -24,4 +16,4 @@ app.set('view engine', 'ejs') // 1st - // 2nd template engine ejs
 app.use('/', router)
 
 // START SERVER
-app.listen(SERVER_PORT)
+module.exports = app

@@ -1,3 +1,4 @@
+const usersCollection = require('../db').collection('users')
 const validator = require('validator')
 
 let User = function (data) {
@@ -33,7 +34,11 @@ User.prototype.register = function () { // all 10k objs will point or have acces
     // Step #1: Validate user data
     this.cleanUp()
     this.validate() // this is pointing towards the user object from userController because that user obj is calling the register function
+
     // Step #2: Only if there are no validation errors // then save the user data into a database
+    if (!this.errors.length) { // only if the errors array is empty then do this
+        usersCollection.insertOne(this.data)
+    }
 }
 
 module.exports = User

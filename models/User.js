@@ -30,6 +30,17 @@ User.prototype.validate = function () {
     if (this.data.username.length > 30) {this.errors.push('username cannot exeed 30 characters')}
 }
 
+User.prototype.login = function (callback) {
+    this.cleanUp()
+    usersCollection.findOne({username: this.data.username}, (err, attemptedUser) => { //pass the 1st parameter to the attemptUser 2nd parameter // arrow function does not manipulate this key
+        if (attemptedUser && attemptedUser.password == this.data.password) {
+            callback('Congrats!')
+        } else {
+            callback('Invalid username / password.')
+        }
+    })
+}
+
 User.prototype.register = function () { // all 10k objs will point or have access to this jump method. it wont duplicate the jump for each 10k objects
     // Step #1: Validate user data
     this.cleanUp()

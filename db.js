@@ -9,7 +9,7 @@ const {
 // connect to the database
 mongodb.connect(CONNECTION_STRING, {useNewUrlParser: true, useUnifiedTopology: true}, function (err, client) {
     console.log('connected to database');
-    module.exports = client.db()
+    module.exports = client
     const app = require('./app')
     app.listen(SERVER_PORT)
 })

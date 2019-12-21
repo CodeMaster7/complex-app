@@ -21,14 +21,29 @@ User.prototype.cleanUp = function () {
 }
 
 User.prototype.validate = function () {
-    if (this.data.username == '') {this.errors.push('You must provide a username.')}
-    if (this.data.username != '' && !validator.isAlphanumeric(this.data.username)) {this.errors.push('Username can only contain letters and numbers.')}
-    if (!validator.isEmail(this.data.email)) {this.errors.push('You must provide a valid email address.')}
-    if (this.data.password == '') {this.errors.push('You must provide a password.')}
-    if (this.data.password.length > 0 && this.data.password.length < 12) {this.errors.push('Password must be at least 12 characters.')}
-    if (this.data.password.length > 50) {this.errors.push('Password cannot exeed 50 characters')}
-    if (this.data.username.length > 0 && this.data.username.length < 3) {this.errors.push('username must be at least 3 characters.')}
-    if (this.data.username.length > 30) {this.errors.push('username cannot exeed 30 characters')}
+    return new Promise(async (resolve, reject) => {
+        if (this.data.username == '') {this.errors.push('You must provide a username.')}
+        if (this.data.username != '' && !validator.isAlphanumeric(this.data.username)) {this.errors.push('Username can only contain letters and numbers.')}
+        if (!validator.isEmail(this.data.email)) {this.errors.push('You must provide a valid email address.')}
+        if (this.data.password == '') {this.errors.push('You must provide a password.')}
+        if (this.data.password.length > 0 && this.data.password.length < 12) {this.errors.push('Password must be at least 12 characters.')}
+        if (this.data.password.length > 50) {this.errors.push('Password cannot exeed 50 characters')}
+        if (this.data.username.length > 0 && this.data.username.length < 3) {this.errors.push('username must be at least 3 characters.')}
+        if (this.data.username.length > 30) {this.errors.push('username cannot exeed 30 characters')}
+
+        // Only if username is valid then check to see if it's already taken
+        if (this.data.username.length > 2 && this.data.username.length < 31 && validator.isAlphanumeric(this.data.username)) {
+            let usernameExists = await usersCollection.findOne({username: this.data.username}) // await = javascript will wait or freaze and operations until the findOne promise resolves or rejects // the await feture is only available inside an asyncronous function
+            if (usernameExists) {this.errors.push('That username is already taken.')}
+        }
+
+        // Only if email is valid then check to see if it's already taken
+        if (validator.isEmail(this.data.email)) {
+            let emailExists = await usersCollection.findOne({email: this.data.email}) // await = javascript will wait or freaze and operations until the findOne promise resolves or rejects // the await feture is only available inside an asyncronous function
+            if (emailExists) {this.errors.push('That email is already being used.')}
+        }
+        resolve()
+    })
 }
 
 User.prototype.login = function () {
@@ -46,18 +61,23 @@ User.prototype.login = function () {
     })
 }
 
-User.prototype.register = function () { // all 10k objs will point or have access to this jump method. it wont duplicate the jump for each 10k objects
+User.prototype.register = function () {
+    return new Promise(async (resolve, reject) => { // all 10k objs will point or have access to this jump method. it wont duplicate the jump for each 10k objects
     // Step #1: Validate user data
     this.cleanUp()
-    this.validate() // this is pointing towards the user object from userController because that user obj is calling the register function
+    await this.validate() // this is pointing towards the user object from userController because that user obj is calling the register function
 
     // Step #2: Only if there are no validation errors // then save the user data into a database
     if (!this.errors.length) { // only if the errors array is empty then do this
         // hash user password
         let salt = bcrypt.genSaltSync(10)
         this.data.password = bcrypt.hashSync(this.data.password, salt) // 1st parameter is the value you want to hash
-        usersCollection.insertOne(this.data)
+       await usersCollection.insertOne(this.data)
+       resolve()
+    } else {
+        reject(this.errors)
     }
+})
 }
 
 module.exports = User

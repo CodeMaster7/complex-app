@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const usersCollection = require('../db').db().collection('users')
 const validator = require('validator')
+const md5 = require('md5')
 
 let User = function (data) {
     this.data = data // this key word points towards whatever is calling/executing the current function // this is the current obj that is bring created .homePlanet ex. user(from userController).homePlanet or User2.homeplanet
@@ -78,6 +79,10 @@ User.prototype.register = function () {
         reject(this.errors)
     }
 })
+}
+
+User.prototype.getAvatar = function () {
+    this.avatar = `https://gravatar.com/avatar/email?s=128`
 }
 
 module.exports = User

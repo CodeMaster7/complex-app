@@ -52,6 +52,8 @@ User.prototype.login = function () {
         this.cleanUp()
         usersCollection.findOne({username: this.data.username}).then((attemptedUser) => {
             if (attemptedUser && bcrypt.compareSync(this.data.password, attemptedUser.password)) {
+                this.data = attemptedUser
+                this.getAvatar()
                 resolve('Congrats!')
             } else {
                 reject('Invalid username / password.')
@@ -64,25 +66,26 @@ User.prototype.login = function () {
 
 User.prototype.register = function () {
     return new Promise(async (resolve, reject) => { // all 10k objs will point or have access to this jump method. it wont duplicate the jump for each 10k objects
-    // Step #1: Validate user data
-    this.cleanUp()
-    await this.validate() // this is pointing towards the user object from userController because that user obj is calling the register function
+        // Step #1: Validate user data
+        this.cleanUp()
+        await this.validate() // this is pointing towards the user object from userController because that user obj is calling the register function
 
-    // Step #2: Only if there are no validation errors // then save the user data into a database
-    if (!this.errors.length) { // only if the errors array is empty then do this
-        // hash user password
-        let salt = bcrypt.genSaltSync(10)
-        this.data.password = bcrypt.hashSync(this.data.password, salt) // 1st parameter is the value you want to hash
-       await usersCollection.insertOne(this.data)
-       resolve()
-    } else {
-        reject(this.errors)
-    }
-})
+        // Step #2: Only if there are no validation errors // then save the user data into a database
+        if (!this.errors.length) { // only if the errors array is empty then do this
+            // hash user password
+            let salt = bcrypt.genSaltSync(10)
+            this.data.password = bcrypt.hashSync(this.data.password, salt) // 1st parameter is the value you want to hash
+        await usersCollection.insertOne(this.data)
+        this.getAvatar()
+        resolve()
+        } else {
+            reject(this.errors)
+        }
+    })
 }
 
 User.prototype.getAvatar = function () {
-    this.avatar = `https://gravatar.com/avatar/email?s=128`
+    this.avatar = `https://gravatar.com/avatar/${md5(this.data.email)}?s=128`
 }
 
 module.exports = User

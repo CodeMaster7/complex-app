@@ -22,6 +22,12 @@ app.use(express.json())
 app.use(sessionOptions)
 app.use(flash())
 
+// MIDDLEWARE
+app.use(function (req, res, next) {
+    res.locals.user = req.session.user // add any objs or properties onto this locals obj
+    next()
+})
+
 app.set('views', 'views') // 1st argument its an express option so set it to views - // 2nd argument name of the folder
 app.set('view engine', 'ejs') // 1st - // 2nd template engine ejs
 // console.log(app.settings);

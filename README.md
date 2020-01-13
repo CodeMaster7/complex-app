@@ -137,4 +137,4 @@ Project Link: [https://github.com/CodeMaster7/complex-app](https://github.com/Co
 [license-url]: https://choosealicense.com/licenses/mit/
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=flat-square&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/sambonfanti
-[product-screenshot]: https://i.postimg.cc/3wVzJY65/complex.jpg
+[product-screenshot]: https://i.postimg.cc/3J7t1W3Y/complex.jpg

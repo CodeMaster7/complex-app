@@ -22,7 +22,7 @@ app.use(express.json())
 app.use(sessionOptions)
 app.use(flash())
 
-// MIDDLEWARE
+// MIDDLEWARE (THIS WILL RUN FIRST)
 app.use(function (req, res, next) {
     res.locals.user = req.session.user // add any objs or properties onto this locals obj
     next()

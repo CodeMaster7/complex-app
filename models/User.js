@@ -3,9 +3,12 @@ const usersCollection = require('../db').db().collection('users')
 const validator = require('validator')
 const md5 = require('md5')
 
-let User = function (data) {
+let User = function (data, getAvatar) {
     this.data = data // this key word points towards whatever is calling/executing the current function // this is the current obj that is bring created .homePlanet ex. user(from userController).homePlanet or User2.homeplanet
     this.errors = []
+
+    if (getAvatar == undefined) {getAvatar = false}
+    if (getAvatar) {this.getAvatar()}
 }
 
 User.prototype.cleanUp = function () {

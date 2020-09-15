@@ -5,6 +5,7 @@ const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const flash = require('connect-flash')
 const markdown = require('marked')
+const csrf = require('csurf')
 const sanitizeHTML = require('sanitize-html')
 
 // Eneble sessions
@@ -47,8 +48,27 @@ app.set('views', 'views') // 1st argument its an express option so set it to vie
 app.set('view engine', 'ejs') // 1st - // 2nd template engine ejs
 // console.log(app.settings);
 
+// security csrf (cross-site request forgery)
+app.use(csrf())
+app.use(function (req, res, next) {
+    res.locals.csrfToken = req.csrfToken()
+    next()
+})
+
 // ROUTES
 app.use('/', router)
+
+// csrf
+app.use(function (err, req, res, next) {
+    if (err) {
+        if (err.code == 'EBADCSRFTOKEN') {
+            req.flash('errors', 'Cross site request forgery detected')
+            req.session.save(() => res.redirect('/'))
+        }
+    } else {
+        res.render('404')
+    }
+})
 
 // Socket.io
 const server = require('http').createServer(app)

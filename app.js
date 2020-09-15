@@ -1,12 +1,18 @@
 // DEPENDENCIES
 const express = require('express')
-const router = require('./router'); // 1st executes the file and the code inside it immediately - // 2nd it returns whatever that file exports and stores it to router variable
 const session = require('express-session')
 const MongoStore = require('connect-mongo')(session)
 const flash = require('connect-flash')
 const markdown = require('marked')
 const csrf = require('csurf')
+const app = express()
 const sanitizeHTML = require('sanitize-html')
+
+app.use(express.urlencoded({extended: false})) // add user submitted data onto our request obj and access it with req.body
+app.use(express.json())
+
+// CREATE API
+app.use('/api', require('./router-api'))
 
 // Eneble sessions
 let sessionOptions = session({
@@ -18,10 +24,6 @@ let sessionOptions = session({
 })
 
 // EXPRESS
-const app = express()
-app.use(express.static('public'))
-app.use(express.urlencoded({extended: false})) // add user submitted data onto our request obj and access it with req.body
-app.use(express.json())
 app.use(sessionOptions)
 app.use(flash())
 
@@ -44,6 +46,10 @@ app.use(function (req, res, next) {
     next()
 })
 
+const router = require('./router'); // 1st executes the file and the code inside it immediately - // 2nd it returns whatever that file exports and stores it to router variable
+
+// EXPRESS
+app.use(express.static('public'))
 app.set('views', 'views') // 1st argument its an express option so set it to views - // 2nd argument name of the folder
 app.set('view engine', 'ejs') // 1st - // 2nd template engine ejs
 // console.log(app.settings);

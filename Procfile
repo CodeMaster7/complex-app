@@ -1,1 +1,1 @@
-Web: node db.js
+Web: nodemon db.js

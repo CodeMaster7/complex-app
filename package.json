@@ -2,9 +2,9 @@
 	"name": "complex-app",
 	"version": "1.0.0",
 	"description": "complex app from udemy brad schef",
-	"main": "db.js",
+	"main": "app.js",
 	"scripts": {
-        "start": "node db.js",
+        "start": "nodemon db.js",
 		"watch": "start node db.js --ignore frontend-js --ignore public/ && start webpack --watch",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
